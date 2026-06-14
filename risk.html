@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Risk Checker | Travel IO</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:radial-gradient(circle at top,#162a52,#070d1a);
+    color:white;
+    min-height:100vh;
+}
+
+.container{
+    max-width:750px;
+    margin:50px auto;
+    padding:30px;
+    border-radius:22px;
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+p.subtitle{
+    text-align:center;
+    color:#b9c7e6;
+    margin-bottom:25px;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+    color:#cfe0ff;
+    font-size:14px;
+}
+
+select{
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    color:white;
+    outline:none;
+}
+
+option{
+    background:#0f1f3d;
+    color:white;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#1e90ff;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.25s;
+}
+
+button:hover{
+    transform:translateY(-3px);
+}
+
+.card{
+    margin-top:25px;
+    padding:20px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    display:none;
+    animation:fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+.badge{
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:12px;
+    font-weight:600;
+    margin-top:10px;
+}
+
+.l1{ background:#22c55e; }
+.l2{ background:#eab308; }
+.l3{ background:#f97316; }
+.l4{ background:#ef4444; }
+
+.details{
+    margin-top:12px;
+    color:#d5e3ff;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🛡 Travel Risk Checker</h1>
+    <p class="subtitle">Global advisory system (smart risk engine)</p>
+
+    <label>Destination Country</label>
+    <select id="country"></select>
+
+    <button onclick="checkRisk()">Check Risk Level</button>
+
+    <div class="card" id="card">
+        <h2 id="route"></h2>
+        <div id="badge" class="badge"></div>
+        <p class="details" id="details"></p>
+    </div>
+
+</div>
+
+<script>
+/* FULL WORLD COUNTRY LIST */
+const countryList = [
+"Afghanistan","Albania","Algeria","Andorra","Angola","Antigua and Barbuda","Argentina","Armenia",
+"Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium",
+"Belize","Benin","Bhutan","Bolivia","Bosnia and Herzegovina","Botswana","Brazil","Brunei","Bulgaria",
+"Burkina Faso","Burundi","Cabo Verde","Cambodia","Cameroon","Canada","Central African Republic","Chad",
+"Chile","China","Colombia","Comoros","Congo","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic",
+"Democratic Republic of the Congo","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador",
+"Egypt","El Salvador","Estonia","Eswatini","Ethiopia","Finland","France","Gabon","Gambia","Georgia",
+"Germany","Ghana","Greece","Guatemala","Guinea","Guinea-Bissau","Guyana","Haiti","Honduras","Hungary",
+"Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy","Jamaica","Japan","Jordan",
+"Kazakhstan","Kenya","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya",
+"Liechtenstein","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta",
+"Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique",
+"Myanmar","Namibia","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea",
+"North Macedonia","Norway","Oman","Pakistan","Panama","Papua New Guinea","Paraguay","Peru","Philippines",
+"Poland","Portugal","Qatar","Romania","Russia","Rwanda","Saudi Arabia","Senegal","Serbia","Sierra Leone",
+"Singapore","Slovakia","Slovenia","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka",
+"Sudan","Suriname","Sweden","Switzerland","Syria","Tajikistan","Tanzania","Thailand","Togo","Tunisia",
+"Turkey","Turkmenistan","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay",
+"Uzbekistan","Venezuela","Vietnam","Yemen","Zambia","Zimbabwe"
+];
+
+function loadCountries(){
+    const select = document.getElementById("country");
+
+    select.innerHTML = "";
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.text = "Select Country";
+    select.appendChild(defaultOption);
+
+    countryList.forEach(c=>{
+        let o = document.createElement("option");
+        o.value = c;
+        o.text = c;
+        select.appendChild(o);
+    });
+}
+loadCountries();
+
+/* RISK DATABASE */
+const riskDB = {
+
+"Afghanistan": { level:"l4", text:"Risk - Avoid Travel", details:"Armed conflict and extreme instability." },
+"Syria": { level:"l4", text:"Risk - Avoid Travel", details:"Ongoing civil war." },
+"Yemen": { level:"l4", text:"Risk - Avoid Travel", details:"War and humanitarian crisis." },
+"Somalia": { level:"l4", text:"Risk - Avoid Travel", details:"High terrorism risk." },
+"Sudan": { level:"l4", text:"Risk - Avoid Travel", details:"Civil conflict ongoing." },
+"Libya": { level:"l4", text:"Risk - Avoid Travel", details:"Armed conflict zones." },
+
+"Iraq": { level:"l3", text:"Reconsider Travel", details:"Security risks in some regions." },
+"Ukraine": { level:"l3", text:"Reconsider Travel", details:"War-affected regions." },
+"Lebanon": { level:"l3", text:"Reconsider Travel", details:"Political instability." },
+"Myanmar": { level:"l3", text:"Reconsider Travel", details:"Military unrest." },
+"Haiti": { level:"l3", text:"Reconsider Travel", details:"Crime and instability." },
+"Iran": { level:"l3", text:"Reconsider Travel", details:"Political tensions." },
+
+"Singapore": { level:"l1", text:"Safe", details:"Very low crime rate." },
+"Japan": { level:"l1", text:"Safe", details:"Extremely safe country." },
+"Switzerland": { level:"l1", text:"Safe", details:"Very stable and secure." },
+"Norway": { level:"l1", text:"Safe", details:"One of the safest countries." },
+"Finland": { level:"l1", text:"Safe", details:"Very low crime rate." },
+"UAE": { level:"l1", text:"Safe", details:"Strong safety systems." },
+"Qatar": { level:"l1", text:"Safe", details:"Very stable country." },
+"Oman": { level:"l1", text:"Safe", details:"Peaceful and stable." },
+"Canada": { level:"l1", text:"Safe", details:"Very safe country." },
+"Australia": { level:"l1", text:"Safe", details:"Stable and safe." },
+"New Zealand": { level:"l1", text:"Safe", details:"Very safe globally." }
+
+};
+
+/* SMART ENGINE */
+function getRisk(country){
+
+    if(!country) return null;
+
+    if(riskDB[country]) return riskDB[country];
+
+    const europe = ["France","Germany","Italy","Spain","United Kingdom","Netherlands","Belgium","Austria"];
+    if(europe.includes(country)){
+        return { level:"l2", text:"Safe, But Slight Carefulness Required",
+        details:"Europe is generally safe but pickpocketing exists." };
+    }
+
+    const asiaSafe = ["India","Thailand","Malaysia","Indonesia","Vietnam","Sri Lanka","Philippines"];
+    if(asiaSafe.includes(country)){
+        return { level:"l2", text:"Safe, But Slight Carefulness Required",
+        details:"Mostly safe tourist destinations." };
+    }
+
+    const americas = ["United States","Canada","Mexico","Brazil","Argentina","Chile"];
+    if(americas.includes(country)){
+        return { level:"l2", text:"Safe, But Slight Carefulness Required",
+        details:"Generally safe but some cities need caution." };
+    }
+
+    const middleEast = ["Saudi Arabia","Jordan","Kuwait","Bahrain","Qatar","Oman","United Arab Emirates"];
+    if(middleEast.includes(country)){
+        return { level:"l1", text:"Safe",
+        details:"Stable region with strong law enforcement." };
+    }
+
+    return {
+        level:"l2",
+        text:"Safe, But Verify Local Advisory",
+        details:"No major alerts detected. Always check official travel advisories."
+    };
+}
+
+/* UI */
+function checkRisk(){
+
+    const country = document.getElementById("country").value;
+
+    if(!country){
+        alert("Please select a country");
+        return;
+    }
+
+    const data = getRisk(country);
+
+    document.getElementById("route").innerText = country;
+    document.getElementById("badge").className = "badge " + data.level;
+    document.getElementById("badge").innerText = data.text;
+    document.getElementById("details").innerText = data.details;
+
+    document.getElementById("card").style.display = "block";
+}
+</script>
+
+</body>
+</html>

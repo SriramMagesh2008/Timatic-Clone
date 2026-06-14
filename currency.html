@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Currency Converter | Travel IO</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:radial-gradient(circle at top,#162a52,#070d1a);
+    color:white;
+    min-height:100vh;
+}
+
+/* HEADER */
+header{
+    text-align:center;
+    padding:30px 8%;
+}
+
+header h1{
+    font-size:2.2rem;
+}
+
+.container{
+    max-width:850px;
+    margin:40px auto;
+    padding:30px;
+
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:22px;
+    backdrop-filter:blur(18px);
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    margin-bottom:8px;
+    color:#cfe0ff;
+    font-size:14px;
+}
+
+select,input{
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.08);
+    color:white;
+    outline:none;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#1e90ff;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:translateY(-3px);
+}
+
+/* LIVE INDICATOR */
+.live{
+    display:inline-block;
+    margin-top:10px;
+    padding:6px 12px;
+    font-size:12px;
+    border-radius:20px;
+    background:#22c55e;
+    color:white;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:1}
+    50%{opacity:0.5}
+    100%{opacity:1}
+}
+
+.result{
+    margin-top:25px;
+    padding:20px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>💱 Global Currency Converter</h1>
+    <div class="live">🔴 LIVE SIMULATED RATES</div>
+</header>
+
+<div class="container">
+
+    <label>From Country</label>
+    <select id="fromCountry"></select>
+
+    <label>To Country</label>
+    <select id="toCountry"></select>
+
+    <label>Amount</label>
+    <input type="number" id="amount" value="1">
+
+    <button onclick="convert()">Convert</button>
+
+    <div class="result" id="result"></div>
+
+</div>
+
+<script>
+
+/* 🌍 COUNTRY → CURRENCY MAP */
+const currencyDB = {
+    "India":"INR",
+    "United States":"USD",
+    "United Kingdom":"GBP",
+    "UAE":"AED",
+    "Saudi Arabia":"SAR",
+    "Singapore":"SGD",
+    "Japan":"JPY",
+    "South Korea":"KRW",
+    "China":"CNY",
+    "Canada":"CAD",
+    "Australia":"AUD",
+    "France":"EUR",
+    "Germany":"EUR",
+    "Italy":"EUR",
+    "Spain":"EUR",
+    "Maldives":"MVR",
+    "Thailand":"THB",
+    "Indonesia":"IDR",
+    "Malaysia":"MYR",
+    "Pakistan":"PKR",
+    "Bangladesh":"BDT",
+    "Sri Lanka":"LKR",
+    "Nepal":"NPR",
+    "Qatar":"QAR",
+    "Kuwait":"KWD",
+    "Oman":"OMR",
+    "Bahrain":"BHD",
+    "Turkey":"TRY",
+    "Russia":"RUB",
+    "Brazil":"BRL",
+    "Mexico":"MXN",
+    "South Africa":"ZAR"
+};
+
+/* 💱 “LIVE-STYLE” GLOBAL RATES (UPDATED SET) */
+function getLiveRates(){
+
+    // small random fluctuation = "live feel"
+    const jitter = () => (Math.random() * 0.02) + 0.99;
+
+    return {
+        USD: 1,
+        INR: 83 * jitter(),
+        AED: 3.67 * jitter(),
+        SAR: 3.75 * jitter(),
+        EUR: 0.92 * jitter(),
+        GBP: 0.79 * jitter(),
+        JPY: 150 * jitter(),
+        SGD: 1.35 * jitter(),
+        CAD: 1.32 * jitter(),
+        AUD: 1.50 * jitter()
+    };
+}
+
+/* 🌍 LOAD COUNTRIES */
+function loadCountries(id){
+    const select = document.getElementById(id);
+
+    let defaultOption = document.createElement("option");
+    defaultOption.value="";
+    defaultOption.text="Select Country";
+    select.appendChild(defaultOption);
+
+    for(let c in currencyDB){
+        let opt = document.createElement("option");
+        opt.value = c;
+        opt.text = c;
+        select.appendChild(opt);
+    }
+}
+
+loadCountries("fromCountry");
+loadCountries("toCountry");
+
+/* 💱 CONVERSION ENGINE */
+function convert(){
+
+    const fromCountry = document.getElementById("fromCountry").value;
+    const toCountry = document.getElementById("toCountry").value;
+    const amount = parseFloat(document.getElementById("amount").value);
+
+    const resultBox = document.getElementById("result");
+
+    if(!fromCountry || !toCountry){
+        alert("Select both countries");
+        return;
+    }
+
+    const fromCurrency = currencyDB[fromCountry];
+    const toCurrency = currencyDB[toCountry];
+
+    const rates = getLiveRates();
+
+    if(!rates[fromCurrency] || !rates[toCurrency]){
+        resultBox.style.display="block";
+        resultBox.innerHTML="⚠ Currency not supported in live system";
+        return;
+    }
+
+    const usd = amount / rates[fromCurrency];
+    const converted = usd * rates[toCurrency];
+
+    resultBox.style.display="block";
+    resultBox.innerHTML = `
+        💱 <b>${amount} ${fromCurrency}</b><br><br>
+        🔁 → <b>${converted.toFixed(2)} ${toCurrency}</b><br><br>
+        📊 Rate: 1 ${fromCurrency} = ${(rates[toCurrency]/rates[fromCurrency]).toFixed(4)} ${toCurrency}
+    `;
+}
+
+/* 🔄 AUTO REFRESH (LIVE FEEL) */
+setInterval(() => {
+    if(document.getElementById("result").style.display === "block"){
+        convert();
+    }
+}, 5000);
+
+</script>
+
+</body>
+</html>

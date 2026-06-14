@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visa Requirements | Travel IO</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background: radial-gradient(circle at top, #162a52, #070d1a);
+    color:white;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+/* MAIN CARD */
+.container{
+    width:100%;
+    max-width:780px;
+    padding:35px;
+
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 24px;
+
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+/* TITLE */
+h2{
+    font-size:28px;
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    text-align:center;
+    font-size:14px;
+    color:#b9c7e6;
+    margin-bottom:25px;
+    line-height:1.5;
+}
+
+/* INPUT GROUP */
+label{
+    display:block;
+    margin-top:18px;
+    margin-bottom:8px;
+    font-size:13px;
+    color:#cfe0ff;
+}
+
+select{
+    width:100%;
+    padding:14px 16px;
+    border-radius:14px;
+
+    background: rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);
+    color:white;
+
+    outline:none;
+    transition:0.3s;
+    cursor:pointer;
+}
+
+select:hover{
+    border-color:#1e90ff;
+}
+
+select:focus{
+    border-color:#1e90ff;
+    box-shadow:0 0 0 4px rgba(30,144,255,0.25);
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+
+    border:none;
+    border-radius:14px;
+
+    background: linear-gradient(135deg, #1e90ff, #3b82f6);
+    color:white;
+
+    font-weight:600;
+    font-size:15px;
+
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(30,144,255,0.35);
+}
+
+/* RESULT CARD */
+.result{
+    margin-top:25px;
+    padding:20px;
+
+    border-radius:18px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+
+    display:none;
+}
+
+/* ROUTE */
+#route{
+    font-size:18px;
+    margin-bottom:10px;
+}
+
+/* BADGES */
+.badge{
+    display:inline-block;
+    padding:7px 14px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:13px;
+}
+
+.voa{ background:#22c55e; }
+.evisa{ background:#3b82f6; }
+.embassy{ background:#f59e0b; }
+.free{ background:#10b981; }
+.restricted{ background:#ef4444; }
+
+/* DETAILS */
+.info{
+    margin-top:12px;
+    color:#d5e3ff;
+    font-size:14px;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>📋 Visa Requirements Checker</h2>
+
+    <p class="subtitle">
+        "Verify visa requirements, entry rules, and travel restrictions for your next trip. Get real-time insights on eligibility and documentation needed."
+    </p>
+
+    <label>Nationality</label>
+    <select id="nationality"></select>
+
+    <label>Destination</label>
+    <select id="destination"></select>
+
+    <button onclick="checkVisa()">Check Visa Type</button>
+
+    <div class="result" id="result">
+        <h3 id="route"></h3>
+        <div id="badge" class="badge"></div>
+        <div class="info" id="details"></div>
+    </div>
+
+</div>
+
+<script>
+const countries = [
+"Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia",
+"Australia","Austria","Azerbaijan","Bahrain","Bangladesh","Belgium","Brazil",
+"Canada","China","Denmark","Egypt","France","Germany","India","Indonesia",
+"Iran","Iraq","Ireland","Italy","Japan","Jordan","Kenya","Kuwait",
+"Malaysia","Maldives","Mexico","Nepal","Netherlands","New Zealand",
+"Norway","Oman","Pakistan","Philippines","Qatar","Russia","Saudi Arabia",
+"Singapore","South Africa","South Korea","Spain","Sri Lanka","Sweden",
+"Switzerland","Thailand","Turkey","UAE","United Kingdom","United States",
+"Vietnam"
+];
+
+function loadCountries(id){
+    const select = document.getElementById(id);
+
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.text = "Select Country";
+    select.appendChild(defaultOption);
+
+    countries.forEach(c=>{
+        let opt = document.createElement("option");
+        opt.value = c;
+        opt.text = c;
+        select.appendChild(opt);
+    });
+}
+
+loadCountries("nationality");
+loadCountries("destination");
+
+/* VISA ENGINE */
+function getVisaType(nat, dest){
+
+    if(nat === dest){
+        return {
+            type:"free",
+            text:"Visa Free",
+            details:"Domestic travel — no visa required."
+        };
+    }
+
+    const visaMatrix = {
+        "UAE": { type:"voa", text:"Visa on Arrival", details:"Many nationalities get VOA or eVisa." },
+        "Singapore": { type:"evisa", text:"eVisa Required", details:"Apply online before travel." },
+        "Maldives": { type:"voa", text:"Visa on Arrival", details:"Tourist visa on arrival for most travelers." },
+        "Thailand": { type:"voa", text:"Visa on Arrival / Visa Free", details:"Depends on nationality." },
+        "Indonesia": { type:"voa", text:"Visa on Arrival", details:"Tourist VOA available." },
+        "Japan": { type:"free", text:"Visa Free", details:"Visa-free short stay for many countries." },
+        "United Kingdom": { type:"embassy", text:"Embassy Visa Required", details:"Must apply before travel." },
+        "United States": { type:"embassy", text:"Visa / ESTA Required", details:"Visa or ESTA depending on passport." }
+    };
+
+    return visaMatrix[dest] || {
+        type:"embassy",
+        text:"Visa Required",
+        details:"Check embassy or official website."
+    };
+}
+
+/* MAIN FUNCTION */
+function checkVisa(){
+
+    const nat = document.getElementById("nationality").value;
+    const dest = document.getElementById("destination").value;
+
+    const result = document.getElementById("result");
+    const route = document.getElementById("route");
+    const badge = document.getElementById("badge");
+    const details = document.getElementById("details");
+
+    if(!nat || !dest){
+        alert("Please select both countries");
+        return;
+    }
+
+    const data = getVisaType(nat, dest);
+
+    route.innerText = `${nat} → ${dest}`;
+    badge.className = `badge ${data.type}`;
+    badge.innerText = data.text;
+    details.innerText = data.details;
+
+    result.style.display = "block";
+}
+</script>
+
+</body>
+</html>

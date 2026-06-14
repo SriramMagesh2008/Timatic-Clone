@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel IO - Your AI Travel Companion</title>
+</head>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+section{
+    padding:80px 8%;
+}
+
+h1,h2,h3{
+    letter-spacing:0.5px;
+}
+
+/* consistent section spacing */
+section + section{
+    margin-top:20px;
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background: radial-gradient(circle at top, #162a52, #070d1a);
+    color:white;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-size:14px;
+    color:#c9d6f0;
+    font-weight:500;
+}
+
+select{
+    width:100%;
+    padding:14px 16px;
+    border-radius:14px;
+
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.15);
+
+    color:white;
+    font-size:14px;
+
+    outline:none;
+
+    transition:0.3s;
+    appearance:none;
+
+    cursor:pointer;
+}
+
+select:hover{
+    border-color:#1e90ff;
+    box-shadow:0 0 0 3px rgba(30,144,255,0.15);
+}
+
+select:focus{
+    border-color:#1e90ff;
+    box-shadow:0 0 0 4px rgba(30,144,255,0.25);
+}
+
+/* Dropdown options (basic improvement) */
+option{
+    background:#0f1f3d;
+    color:white;
+}
+
+/* FORM IMPROVEMENT */
+form{
+    max-width:600px;
+    margin:40px auto;
+    padding:30px;
+
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:22px;
+}
+
+/* FORM TITLE */
+form h2{
+    text-align:center;
+    margin-bottom:25px;
+    font-size:1.8rem;
+}
+
+/* FORM BUTTON */
+form button{
+    width:100%;
+    padding:14px;
+    margin-top:15px;
+
+    border-radius:14px;
+    background:#1e90ff;
+    color:white;
+
+    font-weight:600;
+    font-size:15px;
+
+    box-shadow:0 10px 25px rgba(30,144,255,0.25);
+}
+
+form button:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 30px rgba(30,144,255,0.35);
+}
+
+/* NAVBAR */
+header{
+    padding:20px 8%;
+}
+
+nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+nav h2{
+    font-size:26px;
+    font-weight:700;
+}
+
+nav ul{
+    display:flex;
+    gap:25px;
+    list-style:none;
+}
+
+nav a{
+    text-decoration:none;
+    color:#d7e3ff;
+    font-size:14px;
+    transition:0.3s;
+}
+
+nav a:hover{
+    color:#4da3ff;
+}
+
+/* GLOBAL BUTTON STYLE (FIX) */
+button{
+    border:none;
+    cursor:pointer;
+    transition:0.25s ease;
+}
+
+/* NAV BUTTON */
+nav button{
+    padding:10px 20px;
+    border-radius:12px;
+    background:#1e90ff;
+    color:white;
+    font-weight:600;
+    box-shadow:0 8px 20px rgba(30,144,255,0.25);
+}
+
+nav button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 25px rgba(30,144,255,0.35);
+}
+
+/* HERO */
+.hero{
+    text-align:center;
+    padding:120px 8% 60px;
+}
+
+.hero h1{
+    font-size:3.5rem;
+    font-weight:800;
+    margin-bottom:15px;
+}
+
+.hero p{
+    max-width:750px;
+    margin:auto;
+    color:#b9c7e6;
+    font-size:1.1rem;
+    line-height:1.6;
+    margin-top:10px;
+}
+
+.features{
+    padding:80px 8%;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:22px;
+    margin-top:40px;
+}
+
+.feature-grid > div{
+    padding:22px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(18px);
+
+    transition:0.3s;
+}
+
+.feature-grid > div:hover{
+    transform:translateY(-6px);
+    border-color:#1e90ff;
+}
+
+/* HERO BUTTONS */
+.hero-buttons{
+    margin-top:30px;
+}
+
+.hero-buttons button{
+    padding:14px 28px;
+    border-radius:14px;
+    font-weight:600;
+    margin:10px;
+}
+
+form{
+    margin:50px auto;
+    padding:35px;
+}
+
+form label{
+    margin-top:18px;
+}
+
+form select{
+    margin-bottom:10px;
+}
+
+h2{
+    text-align:center;
+    font-size:2.3rem;
+    margin-bottom:40px;
+}
+
+.primary-btn{
+    background:#1e90ff;
+    color:white;
+    box-shadow:0 10px 25px rgba(30,144,255,0.3);
+}
+
+.primary-btn:hover{
+    transform:translateY(-3px);
+}
+
+.secondary-btn{
+    background:rgba(255,255,255,0.08);
+    color:white;
+    border:1px solid rgba(255,255,255,0.2);
+}
+
+.secondary-btn:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+/* SEARCH CARD */
+.search-card{
+    width:90%;
+    max-width:1000px;
+    margin:40px auto;
+    padding:30px;
+
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:25px;
+}
+
+.search-card h2{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.search-card select{
+    width:100%;
+    padding:14px;
+    margin-top:10px;
+    margin-bottom:20px;
+    border-radius:12px;
+    border:none;
+    outline:none;
+}
+
+/* CHECK BUTTON */
+.check-btn{
+    width:100%;
+    padding:15px;
+    border-radius:14px;
+    background:#1e90ff;
+    color:white;
+    font-weight:600;
+    box-shadow:0 10px 25px rgba(30,144,255,0.25);
+}
+
+.check-btn:hover{
+    transform:translateY(-3px);
+}
+
+/* FEATURES */
+.features{
+    padding:80px 8%;
+}
+
+.section-title{
+    text-align:center;
+    font-size:2.5rem;
+    margin-bottom:40px;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+}
+
+.feature-card{
+    padding:25px;
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.12);
+
+    transition:0.3s;
+}
+
+.feature-card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(30,144,255,0.4);
+}
+
+.feature-card h3{
+    margin-bottom:10px;
+}
+
+.feature-card p{
+    color:#c7d3ee;
+    line-height:1.5;
+}
+
+/* DASHBOARD */
+.dashboard{
+    padding:70px 8%;
+}
+
+.dashboard-card{
+    max-width:800px;
+    margin:auto;
+
+    padding:30px;
+    border-radius:22px;
+
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+/* CTA */
+.cta{
+    text-align:center;
+    padding:80px 8%;
+}
+
+.cta h2{
+    font-size:2.5rem;
+}
+
+.cta p{
+    color:#c9d6f0;
+    max-width:650px;
+    margin:auto;
+    margin-top:10px;
+}
+
+.cta-btn{
+    padding:12px 22px;   /* smaller padding */
+    font-size:14px;      /* smaller text */
+    font-weight:600;
+
+    border-radius:12px;
+
+    color:white;
+    background:linear-gradient(135deg,#1e90ff,#4da3ff);
+
+    border:none;
+
+    box-shadow:0 8px 18px rgba(30,144,255,0.25);
+
+    cursor:pointer;
+
+    transition:all 0.25s ease;
+
+    display:inline-block;
+}
+
+.cta button:
+hover{
+    transform:translateY(-3px);
+}
+
+/* FOOTER */
+footer{
+    text-align:center;
+    padding:30px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    color:#aebbd8;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    nav ul{
+        display:none;
+    }
+
+    .hero h1{
+        font-size:2.5rem;
+    }
+}
+
+.cta-btn{
+    padding:16px 34px;
+    font-size:16px;
+    font-weight:600;
+
+    border-radius:14px;
+    border:none;
+
+    color:white;
+    background:linear-gradient(135deg,#1e90ff,#4da3ff);
+
+    box-shadow:0 10px 25px rgba(30,144,255,0.35);
+
+    cursor:pointer;
+
+    transition:all 0.3s ease;
+    position:relative;
+    overflow:hidden;
+}
+
+/* hover effect */
+.cta-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 15px 35px rgba(30,144,255,0.5);
+}
+
+/* click effect */
+.cta-btn:active{
+    transform:translateY(0px);
+}
+
+/* glowing animation */
+.cta-btn::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.2);
+    transform:skewX(-25deg);
+    transition:0.5s;
+}
+
+.cta-btn:hover::after{
+    left:120%;
+}
+
+</style>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav>
+            <h2>🌍 Travel IO</h2>
+
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Eligibility Checker</a></li>
+                <li><a href="#">Visa Requirements</a></li>
+                <li><a href="#">Currency Converter</a></li>
+                <li><a href="#">Travel Risk</a></li>
+                <li><a href="#">AI Assistant</a></li>
+            </ul>
+
+            <button>Login</button>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section>
+
+        <h1>Welcome, Travel IO!</h1>
+
+        <p>
+            "Your Travel In Your Hands! - Check All Travel Related Information"
+        </p>
+
+    </section>
+
+    <hr>
+
+    <!-- QUICK TRIP SEARCH -->
+    <section>
+
+        <h2>Check Your Journey</h2>
+
+        <form>
+
+            <label>Passport Country</label>
+<select id="passport"></select>
+
+<label>Destination Country</label>
+<select id="destination"></select>
+
+<label>Transit Country</label>
+<select id="transit"></select>
+
+            <br><br>
+
+            <button type="submit">
+                Check Travel Requirements
+            </button>
+
+        </form>
+
+    </section>
+
+    <hr>
+
+    <!-- FEATURES -->
+    <section class="features">
+
+    <h2 class="section-title">Everything You Need For International Travel</h2>
+
+    <div class="feature-grid">
+
+        <div class="feature-card">
+            <h3>🛂 Travel Eligibility Checker</h3>
+            <p>Instantly verify entry requirements, transit rules and passport validity.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>📋 Visa Requirements</h3>
+            <p>Get visa information, required documents, fees and processing times.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>💱 Currency Converter</h3>
+            <p>Access real-time exchange rates for over 150 currencies.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>⚠️ Travel Risk Measurement</h3>
+            <p>Understand safety, health and geopolitical risks before travelling.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>📁 Document Tracker</h3>
+            <p>Store and manage passports, visas and travel documents securely.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🤖 AI Travel Assistant</h3>
+            <p>Ask travel questions and get intelligent travel guidance instantly.</p>
+        </div>
+
+        <div class="feature-card">
+            <h3>🌦 Weather & Alerts</h3>
+            <p>Stay informed with forecasts, warnings and emergency contacts.</p>
+        </div>
+
+    </div>
+
+</section>
+
+    <hr>
+
+    <hr>
+
+    <!-- SAMPLE DASHBOARD -->
+    <section class="dashboard">
+
+    <h2>Your Travel Dashboard</h2>
+
+    <div class="dashboard-card" id="dashboard">
+
+        <h3 id="route">Select your travel countries to view details</h3>
+
+        <p id="eligibility">🛂 Eligibility: --</p>
+        <p id="visa">📋 Visa: --</p>
+        <p id="currency">💱 Currency: --</p>
+        <p id="risk">⚠ Risk: --</p>
+        <p id="weather">🌦 Weather: --</p>
+
+    </div>
+
+</section>
+
+    <hr>
+
+    <!-- CTA -->
+    <section>
+
+        <h2>Plan Your Next Trip With Confidence</h2>
+
+        <p>
+            Travel IO brings travel eligibility,
+            visas, risk assessment and AI assistance
+            into one powerful platform.
+        </p>
+
+        <button class="cta-btn">Get Started</button>
+
+    </section>
+
+    <hr>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <h3>Travel IO</h3>
+
+        <p>
+            Your AI-powered travel companion.
+        </p>
+
+        <p>
+            © 2026 TravelIO. All Rights Reserved.
+        </p>
+
+    </footer>
+
+</body>
+
+<script>
+    
+function updateDashboard(){
+
+    const passport = document.getElementById("passport").value;
+    const destination = document.getElementById("destination").value;
+
+    const route = document.getElementById("route");
+    const eligibility = document.getElementById("eligibility");
+    const visa = document.getElementById("visa");
+    const currency = document.getElementById("currency");
+    const risk = document.getElementById("risk");
+    const weather = document.getElementById("weather");
+
+    if(!passport || !destination){
+        route.innerText = "Select countries to see dashboard";
+        return;
+    }
+
+    route.innerText = `${passport} → ${destination}`;
+
+    // SIMPLE RULE ENGINE (starter version)
+
+    if(passport === "India" && destination === "UAE"){
+        eligibility.innerText = "🛂 Eligibility: Allowed";
+        visa.innerText = "📋 Visa: On Arrival";
+        risk.innerText = "⚠ Risk: Low";
+        currency.innerText = "💱 Currency: 1 INR = 0.044 AED";
+        weather.innerText = "🌦 Weather: 35°C";
+    }
+    else if(passport === destination){
+        eligibility.innerText = "🛂 Eligibility: Same country travel";
+        visa.innerText = "📋 Visa: Not required";
+        risk.innerText = "⚠ Risk: None";
+        currency.innerText = "💱 Currency: Same country";
+        weather.innerText = "🌦 Weather: --";
+    }
+    else{
+        eligibility.innerText = "🛂 Eligibility: Check Required";
+        visa.innerText = "📋 Visa: Possibly Required";
+        risk.innerText = "⚠ Risk: Medium";
+        currency.innerText = "💱 Currency: Varies";
+        weather.innerText = "🌦 Weather: Unknown";
+    }
+}
+
+// trigger when dropdown changes
+document.getElementById("passport").addEventListener("change", updateDashboard);
+document.getElementById("destination").addEventListener("change", updateDashboard);
+
+    const countries = [
+    "Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia",
+    "Australia","Austria","Azerbaijan","Bahrain","Bangladesh","Belgium","Brazil",
+    "Canada","China","Denmark","Egypt","France","Germany","India","Indonesia",
+    "Iran","Iraq","Ireland","Italy","Japan","Jordan","Kenya","Kuwait",
+    "Malaysia","Maldives","Mexico","Nepal","Netherlands","New Zealand",
+    "Norway","Oman","Pakistan","Philippines","Qatar","Russia","Saudi Arabia",
+    "Singapore","South Africa","South Korea","Spain","Sri Lanka","Sweden",
+    "Switzerland","Thailand","Turkey","UAE","United Kingdom","United States",
+    "Vietnam"
+    ];
+
+    function loadCountries(id){
+        let select = document.getElementById(id);
+
+        // default option
+        let defaultOpt = document.createElement("option");
+        defaultOpt.text = "Select Country";
+        defaultOpt.value = "";
+        select.appendChild(defaultOpt);
+
+        countries.forEach(country => {
+            let option = document.createElement("option");
+            option.text = country;
+            option.value = country;
+            select.appendChild(option);
+        });
+    }
+
+    loadCountries("passport");
+    loadCountries("destination");
+    loadCountries("transit");
+</script>
+</html>
