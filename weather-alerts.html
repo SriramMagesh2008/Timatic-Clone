@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather | Travel IO</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:radial-gradient(circle at top,#162a52,#070d1a);
+    color:white;
+}
+
+/* container */
+.container{
+    max-width:900px;
+    margin:40px auto;
+    padding:30px;
+    border-radius:22px;
+
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(18px);
+}
+
+/* header */
+h1{
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#b9c7e6;
+    margin-bottom:25px;
+}
+
+/* search */
+.search-box{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+input{
+    flex:1;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.08);
+    color:white;
+    outline:none;
+}
+
+button{
+    padding:14px 18px;
+    border:none;
+    border-radius:12px;
+    background:#1e90ff;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+/* grid */
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+/* cards */
+.card{
+    padding:18px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+.card h3{
+    margin-bottom:10px;
+}
+
+/* badges */
+.badge{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:10px;
+    font-weight:600;
+}
+
+.safe{ background:#22c55e; }
+.warn{ background:#eab308; }
+.danger{ background:#ef4444; }
+
+/* emergency */
+.emergency{
+    margin-top:20px;
+    padding:18px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+.small{
+    color:#b9c7e6;
+    font-size:14px;
+    margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🌤 Weather Intelligence</h1>
+    <p class="subtitle">Forecasts • Alerts • Travel safety insights</p>
+
+    <div class="search-box">
+        <input id="city" placeholder="Enter city (e.g., Dubai, London, Tokyo)">
+        <button onclick="getWeather()">Search</button>
+    </div>
+
+    <div class="grid">
+
+        <!-- WEATHER CARD -->
+        <div class="card">
+            <h3>Current Weather</h3>
+            <div id="weatherBox">
+                Enter a city to view forecast
+            </div>
+        </div>
+
+        <!-- TRAVEL RISK -->
+        <div class="card">
+            <h3>Travel Weather Risk</h3>
+            <div id="riskBox">--</div>
+        </div>
+
+    </div>
+
+    <!-- EMERGENCY -->
+    <div class="emergency">
+        <h3>📞 Emergency Contacts</h3>
+        <p class="small">
+            Global emergency numbers (always verify locally):
+        </p>
+        <ul class="small">
+            <li>🚑 Medical: 112 / 911 (varies by country)</li>
+            <li>🚓 Police: 999 / 112</li>
+            <li>🚒 Fire: 998 / 112</li>
+        </ul>
+    </div>
+
+</div>
+
+<script>
+
+/* =========================
+   SIMULATED WEATHER ENGINE
+   (You can later replace with real API)
+========================= */
+
+function getWeather(){
+
+    const city = document.getElementById("city").value.trim();
+
+    if(!city){
+        alert("Enter a city");
+        return;
+    }
+
+    // 🌍 BASIC CLIMATE DATABASE (REALISTIC PATTERNS)
+    const climateDB = {
+
+        // HOT DESERT REGION
+        "Dubai":"hot",
+        "Riyadh":"hot",
+        "Doha":"hot",
+        "Kuwait":"hot",
+        "Jeddah":"hot",
+
+        // TROPICAL REGION
+        "Mumbai":"tropical",
+        "Bangkok":"tropical",
+        "Singapore":"tropical",
+        "Jakarta":"tropical",
+        "Manila":"tropical",
+
+        // TEMPERATE
+        "London":"temperate",
+        "Paris":"temperate",
+        "Berlin":"temperate",
+        "Tokyo":"temperate",
+        "Seoul":"temperate",
+
+        // COLD REGION
+        "Moscow":"cold",
+        "Toronto":"cold",
+        "Oslo":"cold",
+        "Helsinki":"cold",
+        "New York":"temperate"
+    };
+
+    const type = climateDB[city] || "temperate";
+
+    let temp, condition;
+
+    // 🌡️ REALISTIC WEATHER GENERATION
+    if(type === "hot"){
+        temp = 30 + Math.floor(Math.random() * 12); // 30–42
+        condition = ["Sunny","Very Hot","Dusty","Clear"][Math.floor(Math.random()*4)];
+    }
+
+    else if(type === "tropical"){
+        temp = 24 + Math.floor(Math.random() * 10); // 24–34
+        condition = ["Humid","Rainy","Thunderstorms","Cloudy"][Math.floor(Math.random()*4)];
+    }
+
+    else if(type === "cold"){
+        temp = -5 + Math.floor(Math.random() * 15); // -5 to 10
+        condition = ["Snowy","Cold","Cloudy","Windy"][Math.floor(Math.random()*4)];
+    }
+
+    else {
+        temp = 10 + Math.floor(Math.random() * 20); // 10–30
+        condition = ["Sunny","Cloudy","Rainy","Windy"][Math.floor(Math.random()*4)];
+    }
+
+    // 🌤 DISPLAY WEATHER
+    document.getElementById("weatherBox").innerHTML = `
+        <p><b>City:</b> ${city}</p>
+        <p><b>Temperature:</b> ${temp}°C</p>
+        <p><b>Condition:</b> ${condition}</p>
+    `;
+
+    // ⚠️ TRAVEL RISK LOGIC (REALISTIC)
+    let risk;
+
+    if(condition === "Thunderstorms" || condition === "Snowy"){
+        risk = { level:"danger", text:"Severe Travel Disruption Risk" };
+    }
+    else if(condition === "Rainy" || condition === "Windy"){
+        risk = { level:"warn", text:"Moderate Travel Risk" };
+    }
+    else if(condition === "Very Hot"){
+        risk = { level:"warn", text:"Heat Risk - Stay Hydrated" };
+    }
+    else{
+        risk = { level:"safe", text:"Good Travel Conditions" };
+    }
+
+    document.getElementById("riskBox").innerHTML = `
+        <span class="badge ${risk.level}">${risk.text}</span>
+        <p class="small" style="margin-top:10px;">
+            Based on regional climate patterns (simulated model).
+        </p>
+    `;
+}
+
+</script>
+
+</body>
+</html>
