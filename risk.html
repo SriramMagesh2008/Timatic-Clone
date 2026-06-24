@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="
+default-src 'self';
+script-src 'self' 'unsafe-inline';
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+img-src 'self' data:;
+font-src 'self' https://fonts.gstatic.com;
+">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Risk Checker | Travel IO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --info: #3b82f6;
+      --bg-dark: #0f172a;
+      --bg-glass: rgba(255,255,255,0.08);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(255,255,255,0.1);
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 1rem;
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.3);
+      --shadow-glow: 0 0 20px rgba(99,102,241,0.3);
+      --transition-fast: 150ms ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-dark);
+      background-image:
+        radial-gradient(ellipse at top left, rgba(99,102,241,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(139,92,246,0.1) 0%, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    a { color: var(--primary); text-decoration: none; }
+
+    /* NAVBAR */
+    .navbar {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: var(--spacing-md) 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .navbar .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex;
+      gap: var(--spacing-lg);
+      list-style: none;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      color: var(--text-secondary);
+      font-weight: 500;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text-primary);
+      background: var(--bg-glass);
+    }
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    @media (max-width: 768px) {
+      .nav-toggle { display: block; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0; right: 0;
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: var(--spacing-md);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links.active { display: flex; }
+    }
+
+    /* LAYOUT */
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-lg); }
+    .page-wrapper { min-height: 100vh; display: flex; flex-direction: column; }
+    main { flex: 1; padding: var(--spacing-2xl) 0; }
+
+    /* PAGE HEADER */
+    .page-header { text-align: center; margin-bottom: var(--spacing-2xl); }
+    .page-header h1 { margin-bottom: var(--spacing-sm); font-size: 2.5rem; font-weight: 700; }
+    .page-header p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+    /* CARD */
+    .card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      transition: all 200ms ease;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.2); box-shadow: var(--shadow-lg); }
+
+    /* FORM */
+    .form-group { margin-bottom: var(--spacing-lg); }
+    label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    select {
+      width: 100%;
+      padding: var(--spacing-md);
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+      transition: all var(--transition-fast);
+    }
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+    }
+    select optgroup { background: var(--bg-dark); }
+    select option { background: var(--bg-dark); color: var(--text-primary); }
+
+    /* BUTTON */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) var(--spacing-xl);
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+
+    /* RESULT */
+    .result-section { max-width: 700px; margin: var(--spacing-xl) auto 0; }
+
+    .advisory-banner {
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+      border: 1px solid;
+    }
+    .advisory-banner.level-1 { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.3); }
+    .advisory-banner.level-2 { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.3); }
+    .advisory-banner.level-3 { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.3); }
+    .advisory-banner.level-4 { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); }
+
+    .advisory-icon { font-size: 3rem; flex-shrink: 0; }
+    .advisory-level {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--spacing-xs);
+    }
+    .level-1 .advisory-level { color: var(--success); }
+    .level-2 .advisory-level { color: var(--info); }
+    .level-3 .advisory-level { color: var(--warning); }
+    .level-4 .advisory-level { color: var(--danger); }
+
+    .advisory-title { font-size: 1.5rem; font-weight: 700; margin-bottom: var(--spacing-xs); }
+    .advisory-subtitle { color: var(--text-secondary); font-size: 0.9rem; }
+
+    /* INFO GRID */
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+    }
+    @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
+
+    .info-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+    }
+    .info-card h4 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: var(--spacing-sm);
+    }
+    .info-card p { color: var(--text-primary); margin: 0; font-weight: 500; }
+
+    /* RISK FACTORS */
+    .risk-factors { background: var(--bg-glass); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--spacing-lg); margin-bottom: var(--spacing-lg); }
+    .risk-factors h4 { font-size: 1rem; margin-bottom: var(--spacing-md); }
+    .factor-list { list-style: none; }
+    .factor-list li {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+    .factor-list li:last-child { border-bottom: none; }
+    .factor-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-green { background: var(--success); }
+    .dot-blue { background: var(--info); }
+    .dot-yellow { background: var(--warning); }
+    .dot-red { background: var(--danger); }
+
+    /* DISCLAIMER */
+    .disclaimer {
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg-glass);
+      border-top: 1px solid var(--border);
+      padding: var(--spacing-xl) 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .mt-xl { margin-top: var(--spacing-xl); }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <span>✈️</span>
+          <span class="text-gradient">Travel IO</span>
+        </a>
+        <button class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        <ul class="nav-links">
+          <li><a href="index.html">Dashboard</a></li>
+          <li><a href="visa-requirement.html">Visa Check</a></li>
+          <li><a href="travel-requirement.html">Travel Requirements</a></li>
+          <li><a href="weather-alerts.html">Weather Alerts</a></li>
+          <li><a href="risk.html" class="active">Risk Check</a></li>
+          <li><a href="currency.html">Currency</a></li>
+          <li><a href="document-tracker.html">Documents</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main>
+      <div class="container">
+
+        <div class="page-header">
+          <h1 class="text-gradient">🛡️ Travel Risk Checker</h1>
+          <p>Real-time advisory levels powered by the Travel IO engine</p>
+        </div>
+
+        <!-- Form -->
+        <div class="card" style="max-width:500px; margin:0 auto;">
+          <div class="form-group">
+            <label for="destinationSelect">Select Destination Country</label>
+            <select id="destinationSelect">
+              <option value="" disabled selected>Loading countries...</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="checkBtn" style="width:100%;">
+            Check Risk Level
+          </button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="result-section hidden"></div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <p>Travel IO © 2026 — Always verify with your government's official travel advisory</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script type="module">
+    import { populateCountryDropdown, travelEngine } from './js/app.js';
+
+    const destinationSelect = document.getElementById('destinationSelect');
+    const checkBtn = document.getElementById('checkBtn');
+    const resultsDiv = document.getElementById('results');
+
+    async function init() {
+      await travelEngine.init();
+      await populateCountryDropdown(destinationSelect, {
+        blankText: 'Select a country'
+      });
+    }
+
+    function getLevelConfig(level) {
+      const configs = {
+        1: {
+          icon: '🟢',
+          label: 'Level 1 — Exercise Normal Precautions',
+          title: 'Low Risk',
+          subtitle: 'This destination is considered safe for most travellers.',
+          factors: [
+            { dot: 'dot-green', text: 'Political situation is stable' },
+            { dot: 'dot-green', text: 'Low crime rate in most areas' },
+            { dot: 'dot-green', text: 'No active conflict or civil unrest' },
+            { dot: 'dot-blue',  text: 'Standard travel insurance recommended' }
+          ]
+        },
+        2: {
+          icon: '🔵',
+          label: 'Level 2 — Exercise Increased Caution',
+          title: 'Moderate Risk',
+          subtitle: 'Some areas or situations require extra awareness.',
+          factors: [
+            { dot: 'dot-blue',   text: 'Generally safe but petty crime possible' },
+            { dot: 'dot-yellow', text: 'Some regions may have elevated risk' },
+            { dot: 'dot-blue',   text: 'Monitor local news during your stay' },
+            { dot: 'dot-yellow', text: 'Comprehensive travel insurance advised' }
+          ]
+        },
+        3: {
+          icon: '🟡',
+          label: 'Level 3 — Reconsider Travel',
+          title: 'High Risk',
+          subtitle: 'Significant risks are present. Reconsider whether travel is necessary.',
+          factors: [
+            { dot: 'dot-yellow', text: 'Political instability or civil unrest reported' },
+            { dot: 'dot-red',    text: 'Elevated crime or terrorism risk' },
+            { dot: 'dot-yellow', text: 'Register with your embassy upon arrival' },
+            { dot: 'dot-red',    text: 'Specialist travel insurance required' }
+          ]
+        },
+        4: {
+          icon: '🔴',
+          label: 'Level 4 — Do Not Travel',
+          title: 'Extreme Risk',
+          subtitle: 'Do not travel to this destination. Life-threatening risks are present.',
+          factors: [
+            { dot: 'dot-red', text: 'Active armed conflict or war' },
+            { dot: 'dot-red', text: 'Extremely high terrorism or kidnapping risk' },
+            { dot: 'dot-red', text: 'Government may be unable to assist citizens' },
+            { dot: 'dot-red', text: 'Most governments advise against all travel' }
+          ]
+        }
+      };
+      return configs[level] || configs[1];
+    }
+
+    function checkRisk() {
+      const destination = destinationSelect.value;
+      if (!destination) {
+        resultsDiv.classList.add('hidden');
+        alert('Please select a destination country.');
+        return;
+      }
+
+      const advisory = travelEngine._getAdvisoryLevel(destination);
+      const destName = travelEngine.getCountryName(destination);
+      const destInfo = travelEngine.data.countries[destination];
+      const isHighRisk = travelEngine.data.highRiskCountries.includes(destination);
+      const config = getLevelConfig(advisory.level);
+
+      resultsDiv.classList.remove('hidden');
+      resultsDiv.innerHTML = `
+
+        <!-- Advisory Banner -->
+        <div class="advisory-banner level-${advisory.level}">
+          <div class="advisory-icon">${config.icon}</div>
+          <div>
+            <div class="advisory-level">${config.label}</div>
+            <div class="advisory-title">${destName}</div>
+            <div class="advisory-subtitle">${config.subtitle}</div>
+          </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="info-grid">
+          <div class="info-card">
+            <h4>Country</h4>
+            <p>${destName}</p>
+          </div>
+          <div class="info-card">
+            <h4>Region</h4>
+            <p>${destInfo?.continent || 'Unknown'}</p>
+          </div>
+          <div class="info-card">
+            <h4>Advisory Level</h4>
+            <p>Level ${advisory.level} of 4</p>
+          </div>
+          <div class="info-card">
+            <h4>Status</h4>
+            <p>${isHighRisk ? '⛔ High Risk — Avoid' : '✅ Travel Possible'}</p>
+          </div>
+        </div>
+
+        <!-- Risk Factors -->
+        <div class="risk-factors">
+          <h4>⚠️ Key Risk Factors</h4>
+          <ul class="factor-list">
+            ${config.factors.map(f => `
+              <li>
+                <span class="factor-dot ${f.dot}"></span>
+                ${f.text}
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+          ℹ️ This data is sourced from the Travel IO engine based on aggregated advisory data.
+          Always cross-check with your government's official travel advisory before making any travel decisions.
+        </div>
+      `;
+    }
+
+    checkBtn.addEventListener('click', checkRisk);
+    destinationSelect.addEventListener('change', () => {
+      if (destinationSelect.value) checkRisk();
+    });
+
+    document.querySelector('.nav-toggle').addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.toggle('active');
+    });
+
+    init();
+  </script>
+</body>
+</html>
